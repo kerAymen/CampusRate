@@ -56,6 +56,25 @@ export class PlacesService {
     this.places.splice(index, 1);
   }
 
+  updateRating(id: string, ratings: number[]): void {
+  const place: Place = this.findOne(id);
+
+  place.reviewCount = ratings.length;
+
+  if (ratings.length === 0) {
+    place.averageRating = null;
+    return;
+  }
+
+  let total: number = 0;
+
+  for (const rating of ratings) {
+    total += rating;
+  }
+
+  place.averageRating = total / ratings.length;
+}
+
   private findPlaceIndex(id: string): number {
     const index: number = this.places.findIndex(
       (place: Place) => place.id === id
