@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePlaceDto } from './create-place.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
     @ApiProperty({
@@ -8,6 +9,9 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
         example: 'Bibliothèque principale',
         required: false,
     })
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
     name?: string;
 
     @ApiProperty({
@@ -15,6 +19,9 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
         example: 'Espace calme avec prises',
         required: false,
     })
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
     description?: string;
 
     @ApiProperty({
@@ -22,6 +29,7 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
         example: 'STUDY_SPACE',
         required: false,
     })
+    @IsOptional()
     category?: string;
 
     @ApiProperty({
@@ -29,6 +37,9 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
         example: 'Pavillon A, local A-210',
         required: false,
     })
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
     address?: string;
 
     @ApiProperty({
@@ -37,6 +48,7 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
         type: [String],
         required: false,
     })
+    @IsOptional()
     services?: string[];
 
     @ApiProperty({
@@ -44,5 +56,6 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
         example: 'ACTIVE',
         required: false,
     })
+    @IsOptional()
     status?: string;
 }

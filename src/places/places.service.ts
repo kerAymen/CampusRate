@@ -36,7 +36,6 @@ export class PlacesService {
       status
     );
 
-    Object.assign(newPlace, createPlaceDto);
 
     this.places.push(newPlace);
 

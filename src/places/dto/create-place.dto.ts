@@ -1,16 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {IsNotEmpty,IsString, } from 'class-validator';
 
 export class CreatePlaceDto {
   @ApiProperty({
     description: "Nom de l'endroit",
     example: 'Bibliothèque principale',
   })
+  @IsString()
+  @IsNotEmpty()
   name!: string;
 
   @ApiProperty({
     description: "Description de l'endroit",
     example: 'Espace calme avec prises',
   })
+  @IsString()
+  @IsNotEmpty()
   description!: string;
 
   @ApiProperty({
@@ -23,6 +28,8 @@ export class CreatePlaceDto {
     description: "Adresse de l'endroit",
     example: 'Pavillon A, local A-210',
   })
+  @IsString()
+  @IsNotEmpty()
   address!: string;
 
   @ApiProperty({
