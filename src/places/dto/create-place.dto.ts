@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {IsNotEmpty,IsString, } from 'class-validator';
+import {ArrayUnique, IsIn, IsArray, IsNotEmpty, IsOptional, IsString, } from 'class-validator';
 
 export class CreatePlaceDto {
   @ApiProperty({
@@ -22,6 +22,15 @@ export class CreatePlaceDto {
     description: "Catégorie de l'endroit",
     example: 'STUDY_SPACE',
   })
+  @IsIn([
+    'STUDY_SPACE',
+    'LIBRARY',
+    'FOOD_SERVICE',
+    'SPORTS',
+    'STUDENT_SERVICE',
+    'COMPUTER_LAB',
+    'OTHER',
+  ])
   category!: string;
 
   @ApiProperty({
@@ -39,6 +48,10 @@ export class CreatePlaceDto {
     required: false,
     default: [],
   })
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsString({ each: true })
   services?: string[];
 
   @ApiProperty({
@@ -46,5 +59,11 @@ export class CreatePlaceDto {
     example: 'ACTIVE',
     required: false,
   })
+  @IsOptional()
+  @IsIn([
+    'ACTIVE',
+    'TEMPORARILY_CLOSED',
+    'INACTIVE',
+  ])
   status?: string;
 }

@@ -6,6 +6,6 @@ import { PlacesModule } from '../places/places.module';
 @Module({
   imports: [PlacesModule],
   controllers: [ReviewsController],
-  providers: [ReviewsService]
+  providers: [ReviewsService],
 })
 export class ReviewsModule {}

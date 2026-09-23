@@ -3,7 +3,7 @@ import { IsInt, IsNotEmpty, IsString, Max, Min, Length } from 'class-validator';
 
 export class CreateReviewDto {
   @ApiProperty({
-    description: "Nom ou psudonyme de l'auteur",
+    description: "Nom ou pseudonyme de l'auteur",
     example: 'Samira',
   })
   @IsString()
