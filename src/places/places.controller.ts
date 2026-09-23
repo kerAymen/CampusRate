@@ -6,15 +6,7 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { PlaceResponseDto } from './dto/response-place.dto';
 import { ProblemDetailsDto } from '../common/dto/problem-details.dto';
 
-import {
-  ApiBadRequestResponse,
-  ApiCreatedResponse,
-  ApiNotFoundResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, } from '@nestjs/swagger';
 
 @Controller('places')
 export class PlacesController {
