@@ -2,29 +2,42 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { Place } from './entities/place.entity';
+import { JsonStorageService } from '../persistence/json-storage.service';
 
 @Injectable()
 export class PlacesService {
-  private readonly places: Place[] = [];
+  constructor(private readonly storageService: JsonStorageService) {}
 
-  findAll(): Place[] {
-    return this.places;
+  async findAll(): Promise<Place[]> {
+    const data = await this.storageService.read();
+
+    return data.places;
   }
 
-  findOne(id: string): Place {
-    const index: number = this.findPlaceIndex(id);
+  async findOne(id: string): Promise<Place> {
+    const data = await this.storageService.read();
 
-    return this.places.at(index)!;
+    const place = data.places.find(
+      (place: Place) => place.id === id,
+    );
+
+    if (!place) {
+      throw new NotFoundException(
+        `L'endroit avec l'ID "${id}" n'existe pas.`,
+      );
+    }
+
+    return place;
   }
 
-  create(createPlaceDto: CreatePlaceDto) {
+  async create(createPlaceDto: CreatePlaceDto): Promise<Place> {
     const {
       name,
       description,
       category,
       address,
       services,
-      status
+      status,
     } = createPlaceDto;
 
     const newPlace: Place = new Place(
@@ -33,59 +46,87 @@ export class PlacesService {
       category,
       address,
       services,
-      status
+      status,
     );
 
+    const data = await this.storageService.read();
 
-    this.places.push(newPlace);
+    data.places.push(newPlace);
+
+    await this.storageService.write(data);
 
     return newPlace;
   }
 
-  update(id: string, updatePlaceDto: UpdatePlaceDto): Place {
-    const place: Place = this.findOne(id);
+  async update(
+    id: string,
+    updatePlaceDto: UpdatePlaceDto,
+  ): Promise<Place> {
+    const data = await this.storageService.read();
+
+    const place = data.places.find(
+      (place: Place) => place.id === id,
+    );
+
+    if (!place) {
+      throw new NotFoundException(
+        `L'endroit avec l'ID "${id}" n'existe pas.`,
+      );
+    }
 
     Object.assign(place, updatePlaceDto);
     place.updatedAt = new Date();
 
+    await this.storageService.write(data);
+
     return place;
   }
 
-  remove(id: string) {
-    const index: number = this.findPlaceIndex(id);
-    this.places.splice(index, 1);
-  }
+  async remove(id: string): Promise<void> {
+    const data = await this.storageService.read();
 
-  updateRating(id: string, ratings: number[]): void {
-  const place: Place = this.findOne(id);
-
-  place.reviewCount = ratings.length;
-
-  if (ratings.length === 0) {
-    place.averageRating = null;
-    return;
-  }
-
-  let total: number = 0;
-
-  for (const rating of ratings) {
-    total += rating;
-  }
-
-  place.averageRating = total / ratings.length;
-}
-
-  private findPlaceIndex(id: string): number {
-    const index: number = this.places.findIndex(
-      (place: Place) => place.id === id
+    const index = data.places.findIndex(
+      (place: Place) => place.id === id,
     );
 
     if (index === -1) {
       throw new NotFoundException(
-        `L'endroit avec l'ID "${id}" n'existe pas.`
+        `L'endroit avec l'ID "${id}" n'existe pas.`,
       );
     }
 
-    return index;
+    data.places.splice(index, 1);
+
+    await this.storageService.write(data);
+  }
+
+  async updateRating(id: string, ratings: number[]): Promise<void> {
+    const data = await this.storageService.read();
+
+    const place = data.places.find(
+      (place: Place) => place.id === id,
+    );
+
+    if (!place) {
+      throw new NotFoundException(
+        `L'endroit avec l'ID "${id}" n'existe pas.`,
+      );
+    }
+
+    place.reviewCount = ratings.length;
+
+    if (ratings.length === 0) {
+      place.averageRating = null;
+    } else {
+      let total: number = 0;
+
+      for (const rating of ratings) {
+        total += rating;
+      }
+
+      place.averageRating = total / ratings.length;
+    }
+
+    await this.storageService.write(data);
   }
 }

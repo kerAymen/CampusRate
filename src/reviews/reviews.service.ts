@@ -1,109 +1,142 @@
-import { Injectable, NotFoundException, } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Review } from './entities/review.entity';
 import { PlacesService } from '../places/places.service';
+import { JsonStorageService } from '../persistence/json-storage.service';
 
 @Injectable()
 export class ReviewsService {
-  private readonly reviews: Review[] = [];
+  constructor(
+    private readonly placesService: PlacesService,
+    private readonly storageService: JsonStorageService,
+  ) {}
 
-  constructor(private readonly placesService: PlacesService) {}
+  async findAllByPlace(placeId: string): Promise<Review[]> {
+    await this.placesService.findOne(placeId);
 
-  findAllByPlace(placeId: string): Review[] {
-    this.placesService.findOne(placeId);
+    const data = await this.storageService.read();
 
-    return this.reviews.filter(
-      (review: Review) => review.placeId === placeId
+    return data.reviews.filter(
+      (review: Review) => review.placeId === placeId,
     );
   }
 
-  findOne(id: string): Review {
-    const index: number = this.findReviewIndex(id);
+  async findOne(id: string): Promise<Review> {
+    const data = await this.storageService.read();
 
-    return this.reviews.at(index)!;
+    const review = data.reviews.find(
+      (review: Review) => review.id === id,
+    );
+
+    if (!review) {
+      throw new NotFoundException(
+        `L'appréciation avec l'ID "${id}" n'existe pas.`,
+      );
+    }
+
+    return review;
   }
 
-  create(placeId: string, createReviewDto: CreateReviewDto): Review {
-    this.placesService.findOne(placeId);
+  async create(
+    placeId: string,
+    createReviewDto: CreateReviewDto,
+  ): Promise<Review> {
+    await this.placesService.findOne(placeId);
 
     const {
       authorName,
       rating,
-      comment
+      comment,
     } = createReviewDto;
 
     const newReview: Review = new Review(
       placeId,
       authorName,
       rating,
-      comment
+      comment,
     );
 
-    this.reviews.push(newReview);
+    const data = await this.storageService.read();
+
+    data.reviews.push(newReview);
+
+    await this.storageService.write(data);
 
     const ratings: number[] = [];
 
-    for (const review of this.reviews) {
+    for (const review of data.reviews) {
       if (review.placeId === placeId) {
         ratings.push(review.rating);
       }
     }
 
-    this.placesService.updateRating(placeId, ratings);
+    await this.placesService.updateRating(placeId, ratings);
 
     return newReview;
   }
 
-  update(id: string, updateReviewDto: UpdateReviewDto): Review {
-    const review: Review = this.findOne(id);
+  async update(
+    id: string,
+    updateReviewDto: UpdateReviewDto,
+  ): Promise<Review> {
+    const data = await this.storageService.read();
+
+    const review = data.reviews.find(
+      (review: Review) => review.id === id,
+    );
+
+    if (!review) {
+      throw new NotFoundException(
+        `L'appréciation avec l'ID "${id}" n'existe pas.`,
+      );
+    }
 
     Object.assign(review, updateReviewDto);
     review.updatedAt = new Date();
 
+    await this.storageService.write(data);
+
     const ratings: number[] = [];
 
-    for (const currentReview of this.reviews) {
+    for (const currentReview of data.reviews) {
       if (currentReview.placeId === review.placeId) {
         ratings.push(currentReview.rating);
       }
     }
 
-    this.placesService.updateRating(review.placeId, ratings);
+    await this.placesService.updateRating(review.placeId, ratings);
 
     return review;
   }
 
-  remove(id: string): void {
-    const review: Review = this.findOne(id);
-    const placeId: string = review.placeId;
+  async remove(id: string): Promise<void> {
+    const data = await this.storageService.read();
 
-    const index: number = this.findReviewIndex(id);
+    const index = data.reviews.findIndex(
+      (review: Review) => review.id === id,
+    );
 
-    this.reviews.splice(index, 1);
+    if (index === -1) {
+      throw new NotFoundException(
+        `L'appréciation avec l'ID "${id}" n'existe pas.`,
+      );
+    }
+
+    const placeId: string = data.reviews[index].placeId;
+
+    data.reviews.splice(index, 1);
+
+    await this.storageService.write(data);
 
     const ratings: number[] = [];
 
-    for (const currentReview of this.reviews) {
+    for (const currentReview of data.reviews) {
       if (currentReview.placeId === placeId) {
         ratings.push(currentReview.rating);
       }
     }
 
-    this.placesService.updateRating(placeId, ratings);
-  }
-
-  private findReviewIndex(id: string): number {
-    const index: number = this.reviews.findIndex(
-      (review: Review) => review.id === id
-    );
-
-    if (index === -1) {
-      throw new NotFoundException(
-        `L'appréciation avec l'ID "${id}" n'existe pas.`
-      );
-    }
-
-    return index;
+    await this.placesService.updateRating(placeId, ratings);
   }
 }
