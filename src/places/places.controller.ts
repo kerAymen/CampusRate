@@ -4,8 +4,17 @@ import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { PlaceResponseDto } from './dto/response-place.dto';
+import { ProblemDetailsDto } from '../common/dto/problem-details.dto';
 
-import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @Controller('places')
 export class PlacesController {
@@ -26,6 +35,10 @@ export class PlacesController {
       },
     },
   })
+  @ApiBadRequestResponse({
+    description: 'Données invalides.',
+    type: ProblemDetailsDto,
+  })
   create(@Body() createPlaceDto: CreatePlaceDto) {
     return this.placesService.create(createPlaceDto);
   }
@@ -33,29 +46,60 @@ export class PlacesController {
   @Get()
   @ApiOperation({
     summary: 'Lister tous les endroits',
-    description: 'Lister tous les endroits de la collection courante.',
+    description: 'Liste tous les endroits de la collection courante.',
+  })
+  @ApiOkResponse({
+    description: 'Liste des endroits.',
+    type: PlaceResponseDto,
+    isArray: true,
   })
   findAll() {
     return this.placesService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Consulter un endroit',
+    description: 'Retourne un endroit à partir de son identifiant.',
+  })
   @ApiParam({
     name: 'id',
-    description: "Identifiant de l'endroit",
+    description: "Identifiant UUID de l'endroit",
+    format: 'uuid',
+  })
+  @ApiOkResponse({
+    description: 'Endroit trouvé.',
+    type: PlaceResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'Endroit inexistant.',
+    type: ProblemDetailsDto,
   })
   findOne(@Param('id') id: string) {
     return this.placesService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiOperation({
+    summary: 'Modifier un endroit',
+    description: "Modifie un ou plusieurs attributs d'un endroit.",
+  })
+  @ApiParam({
+    name: 'id',
+    description: "Identifiant UUID de l'endroit",
+    format: 'uuid',
+  })
   @ApiOkResponse({
     description: 'Endroit modifié.',
     type: PlaceResponseDto,
   })
-  @ApiOperation({
-    summary: 'Modifier un endroit',
-    description: "Modifier un ou plusieurs attributs d'un endroit.",
+  @ApiBadRequestResponse({
+    description: 'Données invalides.',
+    type: ProblemDetailsDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'Endroit inexistant.',
+    type: ProblemDetailsDto,
   })
   update(
     @Param('id') id: string,
@@ -67,7 +111,18 @@ export class PlacesController {
   @Delete(':id')
   @ApiOperation({
     summary: 'Supprimer un endroit',
-    description: 'Retirer un endroit de la collection courante.',
+    description: 'Retire un endroit de la collection courante.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: "Identifiant de l'endroit",
+  })
+  @ApiNoContentResponse({
+    description: 'Endroit supprimé.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Endroit inexistant.',
+    type: ProblemDetailsDto,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
