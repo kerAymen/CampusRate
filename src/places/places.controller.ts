@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query,} from '@nestjs/common';
-
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query, Res,} from '@nestjs/common';
+import type { Response } from 'express'; 
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
@@ -31,9 +31,17 @@ export class PlacesController {
     description: 'Données invalides.',
     type: ProblemDetailsDto,
   })
-  create(@Body() createPlaceDto: CreatePlaceDto) {
-    return this.placesService.create(createPlaceDto);
+  async create(
+    @Body() createPlaceDto: CreatePlaceDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const place = await this.placesService.create(createPlaceDto);
+
+    response.setHeader('Location', `/v1/places/${place.id}`);
+
+    return place;
   }
+  
 
   @Get()
   @ApiOperation({
@@ -80,8 +88,7 @@ export class PlacesController {
   })
   @ApiParam({
     name: 'id',
-    description: "Identifiant UUID de l'endroit",
-    format: 'uuid',
+    description: "Identifiant de l'endroit",
   })
   @ApiOkResponse({
     description: 'Endroit trouvé.',

@@ -1,114 +1,399 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# CampusRate
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+CampusRate est une API REST développée avec NestJS permettant de consulter des endroits et services d'un campus et de publier des appréciations accompagnées d'une note.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+L'API permet de gérer les informations des endroits, leurs appréciations et leurs évaluations. Les données sont conservées localement dans un fichier JSON afin de rester disponibles après le redémarrage de l'application.
 
-## Description
+## Fonctionnalités
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+CampusRate permet de :
 
-## Project setup
+- créer, consulter, modifier et supprimer des endroits;
+- publier des appréciations associées à un endroit;
+- consulter, modifier et supprimer des appréciations;
+- calculer automatiquement la note moyenne et le nombre d'appréciations d'un endroit;
+- filtrer les endroits par catégorie;
+- paginer la liste des endroits;
+- valider les données reçues par l'API;
+- retourner les erreurs dans un format uniforme;
+- conserver les données dans un fichier JSON local;
+- consulter la documentation de l'API avec Swagger UI et tester ses opérations avec Postman.
 
-```bash
-$ npm install
-```
+## Technologies utilisées
 
-## Compile and run the project
+- Node.js
+- TypeScript
+- NestJS
+- `class-validator`
+- Swagger / OpenAPI
+- JSON avec `node:fs/promises`
+- Jest
+- OXLint
+- Prettier
 
-```bash
-# development
-$ npm run start
+## Prérequis
 
-# watch mode
-$ npm run start:dev
+Avant d'installer CampusRate, il faut disposer de :
 
-# production mode
-$ npm run start:prod
-```
+- Node.js;
+- npm;
+- Git.
 
-## Run tests
+## Installation
+
+Cloner le dépôt :
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone https://github.com/kerAymen/CampusRate.git
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Accéder au dossier du projet :
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cd CampusRate
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Installer les dépendances :
 
-## Observability
+```bash
+npm ci
+```
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+## Configuration
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+CampusRate utilise des variables d'environnement pour configurer le port de l'application et l'emplacement du fichier de données.
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+Un fichier `.env.example` est fourni :
 
-## Resources
+```env
+PORT=3000
+DATA_FILE_PATH=data/campus-rate.json
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Créer un fichier `.env` à partir de `.env.example`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Sous macOS ou Linux :
 
-## Support
+```bash
+cp .env.example .env
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Sous Windows PowerShell :
 
-## Stay in touch
+```powershell
+Copy-Item .env.example .env
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Variables disponibles :
 
-## License
+| Variable | Description | Valeur d'exemple |
+| --- | --- | --- |
+| `PORT` | Port utilisé par l'application | `3000` |
+| `DATA_FILE_PATH` | Chemin du fichier JSON utilisé pour la persistance | `data/campus-rate.json` |
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Si ces variables ne sont pas définies, l'application utilise respectivement `3000` et `data/campus-rate.json` comme valeurs par défaut.
+
+Le fichier `.env` contient la configuration locale et ne doit pas être versionné.
+
+## Démarrage
+
+Démarrer l'application :
+
+```bash
+npm run start
+```
+
+Pour démarrer l'application en mode développement avec rechargement automatique :
+
+```bash
+npm run start:dev
+```
+
+Avec la configuration par défaut, l'application démarre sur le port `3000`.
+
+## Documentation Swagger / OpenAPI
+
+CampusRate fournit une documentation interactive avec Swagger UI.
+
+Après le démarrage de l'application, elle est disponible à l'adresse :
+
+```text
+http://localhost:3000/docs
+```
+
+Swagger documente les ressources, les opérations disponibles, les paramètres, les corps de requête et les principales réponses de l'API.
+
+## Contrat général de l'API
+
+L'API utilise le préfixe `/v1` afin d'inclure la version majeure dans ses URI.
+
+Elle repose sur deux ressources principales :
+
+- `places` : les endroits et services du campus;
+- `reviews` : les appréciations associées aux endroits.
+
+### Endpoints principaux
+
+| Méthode | URI | Description |
+| --- | --- | --- |
+| `POST` | `/v1/places` | Créer un endroit |
+| `GET` | `/v1/places` | Lister les endroits |
+| `GET` | `/v1/places/:id` | Consulter un endroit |
+| `PATCH` | `/v1/places/:id` | Modifier partiellement un endroit |
+| `DELETE` | `/v1/places/:id` | Supprimer un endroit |
+| `POST` | `/v1/places/:placeId/reviews` | Publier une appréciation pour un endroit |
+| `GET` | `/v1/places/:placeId/reviews` | Lister les appréciations d'un endroit |
+| `GET` | `/v1/reviews/:id` | Consulter une appréciation |
+| `PATCH` | `/v1/reviews/:id` | Modifier partiellement une appréciation |
+| `DELETE` | `/v1/reviews/:id` | Supprimer une appréciation |
+
+Les détails du contrat de chaque opération sont disponibles dans Swagger UI.
+
+### Filtrage et pagination
+
+`GET /v1/places` prend en charge le filtrage par catégorie et la pagination.
+
+| Paramètre | Description | Valeur par défaut |
+| --- | --- | --- |
+| `category` | Filtre les endroits selon leur catégorie | Aucun filtre |
+| `page` | Numéro de la page | `1` |
+| `limit` | Nombre d'endroits par page | `10` |
+
+Exemple :
+
+```http
+GET /v1/places?category=LIBRARY&page=1&limit=10
+```
+
+La réponse sépare les données des informations de pagination :
+
+```json
+{
+  "data": [],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "totalItems": 0,
+    "totalPages": 0
+  }
+}
+```
+
+## Choix de conception de l'API
+
+Les principaux choix du contrat HTTP sont résumés ci-dessous.
+
+| Élément | Choix | Justification |
+| --- | --- | --- |
+| Noms des ressources | `places` et `reviews` | Les noms représentent les deux concepts principaux du domaine. Ils sont en anglais, au pluriel, en minuscules et sans verbe d'action. |
+| Versionnement | Préfixe `/v1` | La version majeure est incluse dans le chemin afin d'identifier clairement la version du contrat utilisée et de permettre de futures évolutions de l'API. |
+| Imbrication | `/places/:placeId/reviews` pour créer et lister les appréciations | Une appréciation appartient à un endroit. L'imbrication représente cette relation lorsque le contexte de l'endroit est nécessaire. Une appréciation existante peut ensuite être adressée directement avec `/reviews/:id`. |
+| `201 Created` | Création | Une nouvelle ressource a été créée avec succès et l'en-tête `Location` indique l'URI de la ressource créée. |
+| `200 OK` | Consultation et modification | La requête a réussi et une représentation de la ressource ou de la collection est retournée. |
+| `204 No Content` | Suppression | La suppression a réussi et aucun corps de réponse n'est retourné. |
+| `400 Bad Request` | Données invalides | Les données reçues ne respectent pas les règles de validation de l'API. |
+| `404 Not Found` | Ressource inexistante | L'endroit ou l'appréciation demandé n'existe pas. |
+| `409 Conflict` | Suppression d'un endroit possédant des appréciations | L'endroit existe, mais son état actuel empêche sa suppression. |
+
+## Validation et règles métier
+
+Les données reçues sont validées avec des DTO et `class-validator`.
+
+Un `ValidationPipe` global est configuré avec `whitelist` et `forbidNonWhitelisted`, ce qui permet de refuser les propriétés qui ne font pas partie des DTO.
+
+Parmi les principales règles appliquées :
+
+- une note doit être un entier compris entre `1` et `5`;
+- un commentaire doit respecter les longueurs définies par l'API;
+- les catégories et les états des endroits sont limités aux valeurs prévues par l'API;
+- la liste des services d'un endroit ne peut pas contenir de doublons lors de sa création;
+- une appréciation ne peut être créée que pour un endroit existant;
+- un endroit possédant des appréciations ne peut pas être supprimé;
+- `averageRating` et `reviewCount` sont calculés par le serveur et ne peuvent pas être imposés par le client.
+
+Lorsqu'une appréciation est créée, modifiée ou supprimée, `averageRating` et `reviewCount` de l'endroit concerné sont recalculés.
+
+## Gestion des erreurs
+
+Un filtre global est utilisé afin d'uniformiser les réponses d'erreur de l'API.
+
+Les principales situations prises en charge comprennent :
+
+- `400 Bad Request` pour les données invalides;
+- `404 Not Found` lorsqu'un endroit ou une appréciation n'existe pas;
+- `409 Conflict` lorsqu'une suppression entre en conflit avec l'état actuel d'une ressource;
+- `500 Internal Server Error` pour une erreur technique inattendue.
+
+Les erreurs sont retournées avec le type de contenu `application/problem+json` et utilisent le format Problem Details avec les propriétés `type`, `title`, `status`, `detail` et `instance`.
+
+## Persistance JSON
+
+Les données de CampusRate sont conservées dans un fichier JSON local.
+
+Par défaut, le fichier utilisé est :
+
+```text
+data/campus-rate.json
+```
+
+Le chemin peut être modifié avec la variable d'environnement `DATA_FILE_PATH`.
+
+Le fichier contient deux collections principales :
+
+```json
+{
+  "places": [],
+  "reviews": []
+}
+```
+
+La lecture et l'écriture du fichier sont centralisées dans `JsonStorageService`, qui utilise les opérations asynchrones de `node:fs/promises`.
+
+Cette organisation permet de séparer l'accès aux données de la logique métier présente dans `PlacesService` et `ReviewsService`.
+
+Si le fichier n'existe pas, le service de persistance crée le répertoire nécessaire et initialise automatiquement le fichier avec les collections `places` et `reviews`.
+
+Si le contenu du fichier ne peut pas être interprété comme du JSON valide, l'application produit une erreur interne contrôlée.
+
+## Structure du projet
+
+```text
+CampusRate/
+├── data/
+│   └── campus-rate.json
+│
+├── src/
+│   ├── common/
+│   │   ├── dto/
+│   │   │   └── problem-details.dto.ts
+│   │   └── filters/
+│   │       └── http-exception.filter.ts
+│   │
+│   ├── persistence/
+│   │   ├── json-storage.service.ts
+│   │   └── persistence.module.ts
+│   │
+│   ├── places/
+│   │   ├── dto/
+│   │   │   ├── create-place.dto.ts
+│   │   │   ├── response-place.dto.ts
+│   │   │   └── update-place.dto.ts
+│   │   ├── entities/
+│   │   │   └── place.entity.ts
+│   │   ├── places.controller.ts
+│   │   ├── places.module.ts
+│   │   └── places.service.ts
+│   │
+│   ├── reviews/
+│   │   ├── dto/
+│   │   │   ├── create-review.dto.ts
+│   │   │   ├── response-review.dto.ts
+│   │   │   └── update-review.dto.ts
+│   │   ├── entities/
+│   │   │   └── review.entity.ts
+│   │   ├── reviews.controller.ts
+│   │   ├── reviews.module.ts
+│   │   └── reviews.service.ts
+│   │
+│   ├── app.controller.spec.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   ├── configure-swagger.ts
+│   └── main.ts
+│
+├── test/
+├── .env.example
+├── .gitignore
+├── .prettierrc
+├── jest.config.ts
+├── nest-cli.json
+├── oxlint.json
+├── package.json
+└── package-lock.json
+```
+
+Le projet est organisé principalement par fonctionnalités :
+
+- `places` regroupe le contrôleur, le service, les DTO et l'entité liés aux endroits;
+- `reviews` regroupe le contrôleur, le service, les DTO et l'entité liés aux appréciations;
+- `persistence` isole la lecture et l'écriture des données dans le fichier JSON;
+- `common` contient les composants partagés, notamment le DTO Problem Details et le filtre HTTP global;
+- les dossiers `dto` définissent les données acceptées ou retournées par l'API;
+- les dossiers `entities` représentent les ressources manipulées par l'application;
+- `configure-swagger.ts` centralise la configuration Swagger/OpenAPI;
+- `main.ts` configure et démarre l'application.
+
+## Vérification de l'API
+
+L'API peut être vérifiée manuellement à partir de Swagger UI ou avec les scénarios Postman fournis avec le projet.
+
+Les scénarios de vérification couvrent notamment :
+
+- la création des endroits;
+- la consultation des endroits;
+- la création des appréciations;
+- la consultation des appréciations;
+- les modifications;
+- les suppressions;
+- une note invalide et la réponse Problem Details;
+- une ressource inexistante;
+- un conflit lors de la suppression d'un endroit possédant des appréciations;
+- le filtrage;
+- la pagination;
+- la persistance des données après redémarrage.
+
+## Commandes utiles
+
+### Lint
+
+Vérifier le code avec OXLint :
+
+```bash
+npm run lint
+```
+
+### Compilation
+
+Compiler le projet :
+
+```bash
+npm run build
+```
+
+### Tests
+
+Exécuter les tests :
+
+```bash
+npm run test
+```
+
+Exécuter les tests avec couverture :
+
+```bash
+npm run test:cov
+```
+
+### Formatage
+
+Formater le code avec Prettier :
+
+```bash
+npm run format
+```
+
+### Vérification avant la remise
+
+Avant la remise, exécuter :
+
+```bash
+npm ci
+npm run lint
+npm run build
+```
+
+## Limites connues
+
+- La persistance repose sur un fichier JSON local plutôt que sur une base de données.
+- L'API ne possède pas de système d'authentification ou de gestion des utilisateurs.

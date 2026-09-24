@@ -8,13 +8,20 @@ import {
 import { Response } from 'express';
 import { ProblemDetailsDto } from '../dto/problem-details.dto';
 
-@Catch(HttpException)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
-    const exceptionResponse = exception.getResponse();
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const exceptionResponse =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : 'Une erreur interne est survenue.';
 
     const problemDetails: ProblemDetailsDto = {
       type: 'about:blank',
@@ -28,6 +35,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errors: (exceptionResponse as any).errors || undefined,
     };
 
-    response.status(status).json(problemDetails);
+    response
+      .status(status)
+      .type('application/problem+json')
+      .json(problemDetails);
   }
+
 }

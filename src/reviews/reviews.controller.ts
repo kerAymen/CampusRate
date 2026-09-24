@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, } from '@nestjs/common';
-
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Res, } from '@nestjs/common';
+import type { Response } from 'express';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -24,6 +24,12 @@ export class ReviewsController {
   @ApiCreatedResponse({
     description: 'Appréciation créée.',
     type: ReviewResponseDto,
+    headers: {
+      Location: {
+        description: 'URI de la nouvelle ressource',
+        schema: { type: 'string' },
+      },
+    },
   })
   @ApiBadRequestResponse({
     description: 'Données invalides.',
@@ -33,13 +39,20 @@ export class ReviewsController {
     description: 'Endroit inexistant.',
     type: ProblemDetailsDto,
   })
-  create(
+  async create(
     @Param('placeId') placeId: string,
     @Body() createReviewDto: CreateReviewDto,
+    @Res({ passthrough: true }) response: Response,
   ) {
-    return this.reviewsService.create(placeId, createReviewDto);
-  }
+    const review = await this.reviewsService.create(
+      placeId,
+      createReviewDto,
+    );
 
+    response.setHeader('Location', `/v1/reviews/${review.id}`);
+
+    return review;
+  }
   @Get('places/:placeId/reviews')
   @ApiOperation({
     summary: "Lister les appréciations d'un endroit",

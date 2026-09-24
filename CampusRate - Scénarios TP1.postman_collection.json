@@ -22,13 +22,14 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/places",
+          "raw": "http://localhost:3000/v1/places",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places"
           ]
         }
@@ -41,13 +42,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/places/4dddfe2f-f918-4b21-ae44-03edfac69a06",
+          "raw": "http://localhost:3000/v1/places/4dddfe2f-f918-4b21-ae44-03edfac69a06",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places",
             "4dddfe2f-f918-4b21-ae44-03edfac69a06"
           ]
@@ -70,13 +72,14 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/places/fe26310a-aa07-4263-b77b-44ac449b69c5/reviews",
+          "raw": "http://localhost:3000/v1/places/fe26310a-aa07-4263-b77b-44ac449b69c5/reviews",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places",
             "fe26310a-aa07-4263-b77b-44ac449b69c5",
             "reviews"
@@ -91,13 +94,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/reviews/83b7b419-8848-48d7-8094-0d4817c53e7d",
+          "raw": "http://localhost:3000/v1/reviews/83b7b419-8848-48d7-8094-0d4817c53e7d",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "reviews",
             "83b7b419-8848-48d7-8094-0d4817c53e7d"
           ]
@@ -120,13 +124,14 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/reviews/5a1bc191-e541-4519-9b79-b3cecb9d2316",
+          "raw": "http://localhost:3000/v1/reviews/5a1bc191-e541-4519-9b79-b3cecb9d2316",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "reviews",
             "5a1bc191-e541-4519-9b79-b3cecb9d2316"
           ]
@@ -149,13 +154,14 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/places/4dddfe2f-f918-4b21-ae44-03edfac69a06/reviews",
+          "raw": "http://localhost:3000/v1/places/4dddfe2f-f918-4b21-ae44-03edfac69a06/reviews",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places",
             "4dddfe2f-f918-4b21-ae44-03edfac69a06",
             "reviews"
@@ -170,13 +176,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/places/id-inexistant",
+          "raw": "http://localhost:3000/v1/places/id-inexistant",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places",
             "id-inexistant"
           ]
@@ -190,13 +197,14 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/places/fe26310a-aa07-4263-b77b-44ac449b69c5",
+          "raw": "http://localhost:3000/v1/places/fe26310a-aa07-4263-b77b-44ac449b69c5",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places",
             "fe26310a-aa07-4263-b77b-44ac449b69c5"
           ]
@@ -210,13 +218,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/places?category=LIBRARY&page=1&limit=10",
+          "raw": "http://localhost:3000/v1/places?category=LIBRARY&page=1&limit=10",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places"
           ],
           "query": [
@@ -243,13 +252,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:3000/places/fe26310a-aa07-4263-b77b-44ac449b69c5",
+          "raw": "http://localhost:3000/v1/places/fe26310a-aa07-4263-b77b-44ac449b69c5",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "3000",
           "path": [
+            "v1",
             "places",
             "fe26310a-aa07-4263-b77b-44ac449b69c5"
           ]
