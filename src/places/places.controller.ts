@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query,} from '@nestjs/common';
 
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
@@ -6,7 +6,7 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { PlaceResponseDto } from './dto/response-place.dto';
 import { ProblemDetailsDto } from '../common/dto/problem-details.dto';
 
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery,} from '@nestjs/swagger';
 
 @Controller('places')
 export class PlacesController {
@@ -40,13 +40,37 @@ export class PlacesController {
     summary: 'Lister tous les endroits',
     description: 'Liste tous les endroits de la collection courante.',
   })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    description: 'Catégorie utilisée pour filtrer les endroits',
+    example: 'LIBRARY',
+    })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Numéro de la page',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: "Nombre d'endroits par page",
+    example: 10,
+  })
   @ApiOkResponse({
     description: 'Liste des endroits.',
-    type: PlaceResponseDto,
-    isArray: true,
   })
-  findAll() {
-    return this.placesService.findAll();
+  findAll(
+    @Query('category') category?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.placesService.findAll(
+      category,
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+    );
   }
 
   @Get(':id')
