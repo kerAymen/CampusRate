@@ -1,0 +1,271 @@
+{
+  "info": {
+    "_postman_id": "e79d1949-a1fc-4c31-862a-9f4ce1731282",
+    "name": "CampusRate - Scénarios TP1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58481884",
+    "_collection_link": "https://go.postman.co/collection/58481884-e79d1949-a1fc-4c31-862a-9f4ce1731282?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 - Créer un endroit",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Bibliothèque principale\",\r\n  \"description\": \"Espace calme avec prises\",\r\n  \"category\": \"LIBRARY\",\r\n  \"address\": \"Pavillon A\",\r\n  \"services\": [\"WIFI\"],\r\n  \"status\": \"ACTIVE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/v1/places",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Consulter un endroit",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v1/places/4dddfe2f-f918-4b21-ae44-03edfac69a06",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places",
+            "4dddfe2f-f918-4b21-ae44-03edfac69a06"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Créer une appréciation",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"authorName\": \"Samira\",\r\n  \"rating\": 4,\r\n  \"comment\": \"Calme et Wi-Fi stable.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/v1/places/fe26310a-aa07-4263-b77b-44ac449b69c5/reviews",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places",
+            "fe26310a-aa07-4263-b77b-44ac449b69c5",
+            "reviews"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Consulter une appréciation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v1/reviews/83b7b419-8848-48d7-8094-0d4817c53e7d",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "reviews",
+            "83b7b419-8848-48d7-8094-0d4817c53e7d"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Modifier une appréciation",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"rating\": 5,\r\n  \"comment\": \"Calme et Wi-Fi stable.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/v1/reviews/5a1bc191-e541-4519-9b79-b3cecb9d2316",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "reviews",
+            "5a1bc191-e541-4519-9b79-b3cecb9d2316"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Note invalide / Problem Details",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"authorName\": \"Test\",\r\n  \"rating\": 6,\r\n  \"comment\": \"Test avec une note invalide.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/v1/places/4dddfe2f-f918-4b21-ae44-03edfac69a06/reviews",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places",
+            "4dddfe2f-f918-4b21-ae44-03edfac69a06",
+            "reviews"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07 - Ressource inexistante",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v1/places/id-inexistant",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places",
+            "id-inexistant"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "08 - Conflit de suppression",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v1/places/fe26310a-aa07-4263-b77b-44ac449b69c5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places",
+            "fe26310a-aa07-4263-b77b-44ac449b69c5"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "09 - Filtre et pagination",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v1/places?category=LIBRARY&page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "LIBRARY"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10 - Persistance après redémarrage",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/v1/places/fe26310a-aa07-4263-b77b-44ac449b69c5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "v1",
+            "places",
+            "fe26310a-aa07-4263-b77b-44ac449b69c5"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

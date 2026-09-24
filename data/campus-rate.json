@@ -1,0 +1,100 @@
+{
+  "places": [
+    {
+      "id": "286e8ac3-1ac2-41fa-88a0-f3be7279424e",
+      "name": "Bibliothèque principale",
+      "description": "Espace calme avec prises",
+      "category": "LIBRARY",
+      "address": "Pavillon A",
+      "services": [
+        "WIFI"
+      ],
+      "status": "ACTIVE",
+      "averageRating": null,
+      "reviewCount": 0,
+      "createdAt": "2026-09-23T20:26:17.512Z",
+      "updatedAt": "2026-09-23T20:26:17.512Z"
+    },
+    {
+      "id": "fe26310a-aa07-4263-b77b-44ac449b69c5",
+      "name": "Bibliothèque principale",
+      "description": "Espace calme avec prises",
+      "category": "LIBRARY",
+      "address": "Pavillon A",
+      "services": [
+        "WIFI"
+      ],
+      "status": "ACTIVE",
+      "averageRating": 4,
+      "reviewCount": 2,
+      "createdAt": "2026-09-24T00:30:27.178Z",
+      "updatedAt": "2026-09-24T00:30:27.178Z"
+    },
+    {
+      "id": "58e8d1ac-872e-4327-b081-0ec52cc76a03",
+      "name": "Bibliothèque principale",
+      "description": "Espace calme avec prises",
+      "category": "LIBRARY",
+      "address": "Pavillon A",
+      "services": [
+        "WIFI"
+      ],
+      "status": "ACTIVE",
+      "averageRating": null,
+      "reviewCount": 0,
+      "createdAt": "2026-09-24T22:16:35.665Z",
+      "updatedAt": "2026-09-24T22:16:35.665Z"
+    },
+    {
+      "id": "0e0ee748-87b3-4df0-a63e-be9f675736ab",
+      "name": "Bibliothèque principale",
+      "description": "Espace calme avec prises",
+      "category": "LIBRARY",
+      "address": "Pavillon A",
+      "services": [
+        "WIFI"
+      ],
+      "status": "ACTIVE",
+      "averageRating": 5,
+      "reviewCount": 1,
+      "createdAt": "2026-09-24T22:28:22.505Z",
+      "updatedAt": "2026-09-24T22:28:22.505Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "5a1bc191-e541-4519-9b79-b3cecb9d2316",
+      "placeId": "4dddfe2f-f918-4b21-ae44-03edfac69a06",
+      "rating": 5,
+      "comment": "Calme et Wi-Fi stable.",
+      "createdAt": "2026-09-24T00:01:16.278Z",
+      "updatedAt": "2026-09-24T00:15:15.454Z"
+    },
+    {
+      "id": "30bd23a3-6b45-4f0d-bc9a-07a9daf0b0b5",
+      "placeId": "fe26310a-aa07-4263-b77b-44ac449b69c5",
+      "authorName": "Samira",
+      "rating": 4,
+      "comment": "Calme et Wi-Fi stable.",
+      "createdAt": "2026-09-24T00:31:26.701Z",
+      "updatedAt": "2026-09-24T00:31:26.701Z"
+    },
+    {
+      "id": "83b7b419-8848-48d7-8094-0d4817c53e7d",
+      "placeId": "fe26310a-aa07-4263-b77b-44ac449b69c5",
+      "authorName": "Samira",
+      "rating": 4,
+      "comment": "Calme et Wi-Fi stable.",
+      "createdAt": "2026-09-24T01:32:45.408Z",
+      "updatedAt": "2026-09-24T01:32:45.408Z"
+    },
+    {
+      "id": "169c2502-17d0-4e77-9047-f91bcaa0ab03",
+      "placeId": "0e0ee748-87b3-4df0-a63e-be9f675736ab",
+      "rating": 5,
+      "comment": "Calme et Wi-Fi stable.",
+      "createdAt": "2026-09-24T22:30:48.177Z",
+      "updatedAt": "2026-09-24T22:31:28.246Z"
+    }
+  ]
+}
