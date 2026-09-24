@@ -89,7 +89,19 @@
       "name": "04 - Consulter une appréciation",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/reviews/83b7b419-8848-48d7-8094-0d4817c53e7d",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "reviews",
+            "83b7b419-8848-48d7-8094-0d4817c53e7d"
+          ]
+        }
       },
       "response": []
     },

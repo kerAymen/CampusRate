@@ -26,7 +26,7 @@
       ],
       "status": "ACTIVE",
       "averageRating": 4,
-      "reviewCount": 1,
+      "reviewCount": 2,
       "createdAt": "2026-09-24T00:30:27.178Z",
       "updatedAt": "2026-09-24T00:30:27.178Z"
     }
@@ -48,6 +48,15 @@
       "comment": "Calme et Wi-Fi stable.",
       "createdAt": "2026-09-24T00:31:26.701Z",
       "updatedAt": "2026-09-24T00:31:26.701Z"
+    },
+    {
+      "id": "83b7b419-8848-48d7-8094-0d4817c53e7d",
+      "placeId": "fe26310a-aa07-4263-b77b-44ac449b69c5",
+      "authorName": "Samira",
+      "rating": 4,
+      "comment": "Calme et Wi-Fi stable.",
+      "createdAt": "2026-09-24T01:32:45.408Z",
+      "updatedAt": "2026-09-24T01:32:45.408Z"
     }
   ]
 }
