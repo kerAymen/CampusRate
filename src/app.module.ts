@@ -1,5 +1,10 @@
+
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import * as Joi from 'joi';
+
+import databaseConfig from './config/database.config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,6 +16,19 @@ import { PersistenceModule } from './persistence/persistence.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [databaseConfig],
+      validationSchema: Joi.object({
+        MONGODB_URI: Joi.string().required(),
+        PORT: Joi.number().default(3000),
+        DATA_FILE_PATH: Joi.string().optional(),
+      }),
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('database.uri'),
+      }),
     }),
     PlacesModule,
     ReviewsModule,
