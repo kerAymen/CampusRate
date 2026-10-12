@@ -62,9 +62,10 @@ export class ReviewsService {
     id: string,
     updateReviewDto: UpdateReviewDto,
   ) {
+    const { authorName, rating, comment } = updateReviewDto;
     const review = await this.reviewModel.findOneAndUpdate(
       { id },
-      { $set: updateReviewDto },
+      { $set: { authorName, rating, comment } },
       { new: true, runValidators: true },
     ).exec();
 
