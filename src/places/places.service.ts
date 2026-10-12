@@ -81,10 +81,11 @@ export class PlacesService {
   }
 
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
+    const { name, description, category, address, services, status } = updatePlaceDto;
     const place = await this.placeModel
       .findOneAndUpdate(
         { id },
-        { $set: updatePlaceDto },
+        { $set: { name, description, category, address, services, status } },
         { new: true, runValidators: true },
       )
       .exec();
