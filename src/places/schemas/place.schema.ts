@@ -1,8 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { randomUUID } from 'crypto';
 
 @Schema({ timestamps: true })
 export class Place extends Document {
+  @Prop({ required: true, unique: true, default: () => randomUUID() })
+  id: string;
   @Prop({ required: true })
   name: string;
 
