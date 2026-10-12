@@ -1,33 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { Review } from './entities/review.entity';
 import { PlacesService } from '../places/places.service';
-import { JsonStorageService } from '../persistence/json-storage.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Review as ReviewSchema } from './schemas/review.schema';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     private readonly placesService: PlacesService,
-    private readonly storageService: JsonStorageService,
+    @InjectModel(ReviewSchema.name)
+    private readonly reviewModel: Model<ReviewSchema>,
   ) {}
 
-  async findAllByPlace(placeId: string): Promise<Review[]> {
+  async findAllByPlace(placeId: string) {
     await this.placesService.findOne(placeId);
-
-    const data = await this.storageService.read();
-
-    return data.reviews.filter(
-      (review: Review) => review.placeId === placeId,
-    );
+    return this.reviewModel.find({ placeId }).exec();
   }
 
-  async findOne(id: string): Promise<Review> {
-    const data = await this.storageService.read();
-
-    const review = data.reviews.find(
-      (review: Review) => review.id === id,
-    );
+  async findOne(id: string) {
+    const review = await this.reviewModel.findOne({ id }).exec();
 
     if (!review) {
       throw new NotFoundException(
@@ -41,50 +34,39 @@ export class ReviewsService {
   async create(
     placeId: string,
     createReviewDto: CreateReviewDto,
-  ): Promise<Review> {
+  ) {
     await this.placesService.findOne(placeId);
 
-    const {
-      authorName,
-      rating,
-      comment,
-    } = createReviewDto;
+    const { authorName, rating, comment } = createReviewDto;
 
-    const newReview: Review = new Review(
+    const newReview = await this.reviewModel.create({
       placeId,
       authorName,
       rating,
       comment,
-    );
+    });
 
-    const data = await this.storageService.read();
-
-    data.reviews.push(newReview);
-
-    await this.storageService.write(data);
+    const reviews = await this.reviewModel.find({ placeId }).exec();
 
     const ratings: number[] = [];
 
-    for (const review of data.reviews) {
-      if (review.placeId === placeId) {
-        ratings.push(review.rating);
-      }
+    for (const review of reviews) {
+      ratings.push(review.rating);
     }
 
     await this.placesService.updateRating(placeId, ratings);
-
     return newReview;
   }
 
   async update(
     id: string,
     updateReviewDto: UpdateReviewDto,
-  ): Promise<Review> {
-    const data = await this.storageService.read();
-
-    const review = data.reviews.find(
-      (review: Review) => review.id === id,
-    );
+  ) {
+    const review = await this.reviewModel.findOneAndUpdate(
+      { id },
+      { $set: updateReviewDto },
+      { new: true, runValidators: true },
+    ).exec();
 
     if (!review) {
       throw new NotFoundException(
@@ -92,51 +74,42 @@ export class ReviewsService {
       );
     }
 
-    Object.assign(review, updateReviewDto);
-    review.updatedAt = new Date();
-
-    await this.storageService.write(data);
+    const reviews = await this.reviewModel
+      .find({ placeId: review.placeId })
+      .exec();
 
     const ratings: number[] = [];
 
-    for (const currentReview of data.reviews) {
-      if (currentReview.placeId === review.placeId) {
-        ratings.push(currentReview.rating);
-      }
+    for (const currentReview of reviews) {
+      ratings.push(currentReview.rating);
     }
 
     await this.placesService.updateRating(review.placeId, ratings);
-
     return review;
   }
 
   async remove(id: string): Promise<void> {
-    const data = await this.storageService.read();
+    const review = await this.reviewModel.findOne({ id }).exec();
 
-    const index = data.reviews.findIndex(
-      (review: Review) => review.id === id,
-    );
-
-    if (index === -1) {
+    if (!review) {
       throw new NotFoundException(
         `L'appréciation avec l'ID "${id}" n'existe pas.`,
       );
     }
 
-    const placeId: string = data.reviews[index].placeId;
+    const placeId = review.placeId;
 
-    data.reviews.splice(index, 1);
+    await this.reviewModel.deleteOne({ id }).exec();
 
-    await this.storageService.write(data);
+    const reviews = await this.reviewModel.find({ placeId }).exec();
 
     const ratings: number[] = [];
 
-    for (const currentReview of data.reviews) {
-      if (currentReview.placeId === placeId) {
-        ratings.push(currentReview.rating);
-      }
+    for (const currentReview of reviews) {
+      ratings.push(currentReview.rating);
     }
 
     await this.placesService.updateRating(placeId, ratings);
   }
+
 }
