@@ -21,6 +21,15 @@ export class CreatePlaceDto {
   @ApiProperty({
     description: "Catégorie de l'endroit",
     example: 'STUDY_SPACE',
+    enum: [
+      'STUDY_SPACE',
+      'LIBRARY',
+      'FOOD_SERVICE',
+      'SPORTS',
+      'STUDENT_SERVICE',
+      'COMPUTER_LAB',
+      'OTHER',
+    ],
   })
   @IsIn([
     'STUDY_SPACE',
@@ -57,6 +66,7 @@ export class CreatePlaceDto {
   @ApiProperty({
     description: "État de l'endroit",
     example: 'ACTIVE',
+    enum: ['ACTIVE', 'TEMPORARILY_CLOSED', 'INACTIVE'],
     required: false,
   })
   @IsOptional()

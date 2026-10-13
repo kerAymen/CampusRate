@@ -1,38 +1,39 @@
 import { Injectable, NotFoundException, ConflictException,} from '@nestjs/common';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
-import { Place } from './entities/place.entity';
-import { Review } from '../reviews/entities/review.entity';
-import { JsonStorageService } from '../persistence/json-storage.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Place as PlaceSchema } from './schemas/place.schema';
+import { Review as ReviewSchema } from '../reviews/schemas/review.schema';
 
 @Injectable()
 export class PlacesService {
-  constructor(private readonly storageService: JsonStorageService) {}
+  constructor(
+    @InjectModel(PlaceSchema.name)
+    private readonly placeModel: Model<PlaceSchema>,
+    @InjectModel(ReviewSchema.name)
+    private readonly reviewModel: Model<ReviewSchema>,
+  ) {}
 
   async findAll(
     category?: string,
     page: number = 1,
     limit: number = 10,
   ) {
-    const data = await this.storageService.read();
+    const filter = category ? { category } : {};
 
-    let places = data.places;
+    const totalItems = await this.placeModel.countDocuments(filter);
 
-    if (category) {
-      places = places.filter(
-        (place: Place) => place.category === category,
-      );
-    }
+    const places = await this.placeModel
+      .find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
 
-    const totalItems = places.length;
     const totalPages = Math.ceil(totalItems / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-
-    const paginatedPlaces = places.slice(startIndex, endIndex);
 
     return {
-      data: paginatedPlaces,
+      data: places,
       pagination: {
         page,
         limit,
@@ -42,53 +43,52 @@ export class PlacesService {
     };
   }
 
-  async findOne(id: string): Promise<Place> {
-    const data = await this.storageService.read();
-
-    const place = data.places.find(
-      (place: Place) => place.id === id,
-    );
+  
+  async findOne(id: string) {
+    const place = await this.placeModel
+      .findOne({ id })
+      .exec();
 
     if (!place) {
       throw new NotFoundException(
-        `L'endroit avec l'ID "${id}" n'existe pas.`
+        `L'endroit avec l'ID "${id}" n'existe pas.`,
       );
     }
 
     return place;
   }
 
-  async create(createPlaceDto: CreatePlaceDto): Promise<Place> {
+  async create(createPlaceDto: CreatePlaceDto) {
     const {
       name,
       description,
       category,
       address,
       services,
-      status
+      status,
     } = createPlaceDto;
 
-    const newPlace: Place = new Place(
+    const newPlace = await this.placeModel.create({
       name,
       description,
       category,
       address,
       services,
-      status
-    );
-
-    const data = await this.storageService.read();
-    data.places.push(newPlace);
-    await this.storageService.write(data);
+      status,
+    });
 
     return newPlace;
   }
 
-  async update(id: string, updatePlaceDto: UpdatePlaceDto): Promise<Place> {
-    const data = await this.storageService.read();
-    const place = data.places.find(
-      (place: Place) => place.id === id,
-    );
+  async update(id: string, updatePlaceDto: UpdatePlaceDto) {
+    const { name, description, category, address, services, status } = updatePlaceDto;
+    const place = await this.placeModel
+      .findOneAndUpdate(
+        { id },
+        { $set: { name, description, category, address, services, status } },
+        { new: true, runValidators: true },
+      )
+      .exec();
 
     if (!place) {
       throw new NotFoundException(
@@ -96,30 +96,20 @@ export class PlacesService {
       );
     }
 
-    Object.assign(place, updatePlaceDto);
-    place.updatedAt = new Date();
-
-    await this.storageService.write(data);
-
     return place;
   }
 
+
   async remove(id: string): Promise<void> {
-    const data = await this.storageService.read();
+    const place = await this.placeModel.findOne({ id });
 
-    const index = data.places.findIndex(
-      (place: Place) => place.id === id,
-    );
-
-    if (index === -1) {
+    if (!place) {
       throw new NotFoundException(
         `L'endroit avec l'ID "${id}" n'existe pas.`,
       );
     }
 
-    const hasReviews = data.reviews.some(
-      (review: Review) => review.placeId === id,
-    );
+    const hasReviews = await this.reviewModel.exists({ placeId: id });
 
     if (hasReviews) {
       throw new ConflictException(
@@ -127,16 +117,32 @@ export class PlacesService {
       );
     }
 
-    data.places.splice(index, 1);
-
-    await this.storageService.write(data);
+    await this.placeModel.deleteOne({ id });
   }
 
+    
   async updateRating(id: string, ratings: number[]): Promise<void> {
-    const data = await this.storageService.read();
+    let averageRating: number | null = null;
 
-    const place = data.places.find(
-      (place: Place) => place.id === id,
+    if (ratings.length > 0) {
+      let total = 0;
+
+      for (const rating of ratings) {
+        total += rating;
+      }
+
+      averageRating = total / ratings.length;
+    }
+
+    const place = await this.placeModel.findOneAndUpdate(
+      { id },
+      {
+        $set: {
+          reviewCount: ratings.length,
+          averageRating,
+        },
+      },
+      { new: true },
     );
 
     if (!place) {
@@ -144,22 +150,17 @@ export class PlacesService {
         `L'endroit avec l'ID "${id}" n'existe pas.`,
       );
     }
-
-    place.reviewCount = ratings.length;
-
-    if (ratings.length === 0) {
-      place.averageRating = null;
-    } else {
-      let total: number = 0;
-
-      for (const rating of ratings) {
-        total += rating;
-      }
-
-      place.averageRating = total / ratings.length;
-    }
-
-    await this.storageService.write(data);
   }
-  
-}
+
+  async countByCategory() {
+    return this.placeModel.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+  }
+    
+  }
