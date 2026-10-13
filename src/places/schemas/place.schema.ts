@@ -32,3 +32,4 @@ export class Place extends Document {
 }
 
 export const PlaceSchema = SchemaFactory.createForClass(Place);
+PlaceSchema.index({ category: 1 });

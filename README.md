@@ -397,3 +397,28 @@ npm run build
 
 - La persistance repose sur un fichier JSON local plutôt que sur une base de données.
 - L'API ne possède pas de système d'authentification ou de gestion des utilisateurs.
+
+
+## Fonctionnalités optionnelles
+
+### M3 — Choix entre référence et imbrication
+
+Pour CampusRate, j'ai choisi de stocker les endroits et les avis dans deux collections séparées: places et reviews.
+
+Chaque avis contient un placeId qui permet de retrouver l'endroit associé.
+
+J'ai choisi cela car un endroit peut avoir plusieurs avis. Cela permet de gérer les avis séparément, même si certaines informations de l'endroit doivent être mises à jour.
+
+L'imbrication aurait aussi été possible, mais les documents des endroits auraient pu devenir plus gros avec l'ajout des avis.
+
+### M1 — Index MongoDB
+
+Un index a été ajouté
+
+Un index unique sur id permet d'éviter les doublons
+
+Les erreurs de duplication MongoDB sont gérées
+
+### M2 — Agrégation MongoDB
+
+Une agrégation MongoDB permet de compter le nombre d'endroits par catégorie 

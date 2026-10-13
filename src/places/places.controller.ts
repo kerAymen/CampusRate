@@ -80,6 +80,18 @@ export class PlacesController {
     );
   }
 
+  @Get('stats/categories')
+  @ApiOperation({
+    summary: "Nombre d'endroits par catégorie",
+    description: 'Statistiques par catégorie avec MongoDB.',
+  })
+  @ApiOkResponse({
+    description: "Nombre d'endroits pour chaque catégorie.",
+  })
+  countByCategory() {
+    return this.placesService.countByCategory();
+  }
+
   @Get(':id')
   @ApiOperation({
     summary: 'Consulter un endroit',
