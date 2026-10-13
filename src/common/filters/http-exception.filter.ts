@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProblemDetailsDto } from '../dto/problem-details.dto';
@@ -11,6 +12,7 @@ import { MongoServerError } from 'mongodb';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name);
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -18,6 +20,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception = new HttpException(
         'Une valeur unique existe déjà.',
         HttpStatus.CONFLICT,
+      );
+    }
+
+    if (
+      exception instanceof Error &&
+      'status' in exception &&
+      exception.status === 413
+    ) {
+      exception = new HttpException(
+        'Le corps de la requête est trop gros.',
+        HttpStatus.PAYLOAD_TOO_LARGE,
       );
     }
     const status =
@@ -42,10 +55,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errors: (exceptionResponse as any).errors || undefined,
     };
 
+    const request = ctx.getRequest();
+    this.logger.error(
+      `${request.method} ${request.path} - ${status}`,
+    );
+
     response
       .status(status)
       .type('application/problem+json')
       .json(problemDetails);
   }
-
 }
