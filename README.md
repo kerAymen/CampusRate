@@ -422,3 +422,28 @@ Les erreurs de duplication MongoDB sont gérées
 ### M2 — Agrégation MongoDB
 
 Une agrégation MongoDB permet de compter le nombre d'endroits par catégorie 
+
+
+### H1 Ajouter du rate limiting
+Une limite de 100 requêtes par minute a été ajoutée avec Throttler.
+
+### H2 Limiter la taille du corps HTTP et gérer 413
+La taille des requêtes JSON est limitée à 50 Ko. Une erreur 413 est retournée si la limite est dépassée.
+
+### H4 Restreindre davantage CORS selon l’environnement
+CORS est configuré selon l'environnement
+
+### H5 Restreindre explicitement les méthodes HTTP autorisées
+Les méthodes GET, POST, PATCH et DELETE sont définies dans la configuration CORS.
+
+### P1 Utiliser une allowlist explicite de filtres
+Le filtrage MongoDB utilise  le champ category.
+
+### P2 Sélection explicite des propriétés modifiables
+Les propriétés modifiables sont sélectionnées explicitement.
+
+### L1 Ajouter une journalisation des opérations normales de l’API avec un middleware
+Un middleware journalise les requêtes HTTP avec la méthode, le path, le statut et la durée.
+
+### L2 ajout de la journalisation des erreurs 
+Les erreurs sont journalisées 
