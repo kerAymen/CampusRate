@@ -27,6 +27,15 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
     @ApiProperty({
         description: "Catégorie de l'endroit",
         example: 'STUDY_SPACE',
+        enum: [
+            'STUDY_SPACE',
+            'LIBRARY',
+            'FOOD_SERVICE',
+            'SPORTS',
+            'STUDENT_SERVICE',
+            'COMPUTER_LAB',
+            'OTHER',
+        ],
         required: false,
     })
     @IsOptional()
@@ -54,6 +63,7 @@ export class UpdatePlaceDto extends PartialType(CreatePlaceDto) {
     @ApiProperty({
         description: "État de l'endroit",
         example: 'ACTIVE',
+        enum: ['ACTIVE', 'TEMPORARILY_CLOSED', 'INACTIVE'],
         required: false,
     })
     @IsOptional()

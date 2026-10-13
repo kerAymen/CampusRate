@@ -6,7 +6,7 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 import { PlaceResponseDto } from './dto/response-place.dto';
 import { ProblemDetailsDto } from '../common/dto/problem-details.dto';
 
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery,} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiConflictResponse,} from '@nestjs/swagger';
 
 @Controller('places')
 export class PlacesController {
@@ -42,7 +42,6 @@ export class PlacesController {
     return place;
   }
   
-
   @Get()
   @ApiOperation({
     summary: 'Lister tous les endroits',
@@ -145,6 +144,10 @@ export class PlacesController {
   })
   @ApiNotFoundResponse({
     description: 'Endroit inexistant.',
+    type: ProblemDetailsDto,
+  })
+  @ApiConflictResponse({
+    description: 'Impossible de supprimer un endroit qui possède des appréciations.',
     type: ProblemDetailsDto,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
