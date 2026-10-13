@@ -151,5 +151,16 @@ export class PlacesService {
       );
     }
   }
+
+  async countByCategory() {
+    return this.placeModel.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+  }
     
   }
